@@ -37,7 +37,7 @@
 <h3 align="center">CaraDBela</h3>
 
   <p align="center">
-    Base de dados modelar para dispositivos IoT.
+    IoT de forma bela.
     <br />
     <a href="https://github.com/github_username/repo_name"><strong>Explora os sprints »</strong></a>
     <br />
