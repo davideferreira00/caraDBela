@@ -17,7 +17,7 @@
 <br />
  
 <div align="center">
-![9GXtNSs](https://github.com/user-attachments/assets/9f8de903-6197-4384-8a22-9e7ee202aef9)
+![Image](https://github.com/user-attachments/assets/fd5c9dcf-033b-4930-ab4c-8f63a5b06507)
 
 </div>
 
