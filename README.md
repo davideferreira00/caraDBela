@@ -16,7 +16,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <img src="https://imgur.com/a/Naok3Ji" alt="MiniLogo" width="80" height="80">
+  <img src="https://imgur.com/9GXtNSs" alt="MiniLogo" width="80" height="80">
 </div>
 
 
