@@ -14,12 +14,11 @@
 
 
 <!-- PROJECT LOGO -->
-<br />
- 
+
 <div align="center">
 ![MiniLogo](https://github.com/davideferreira00/caraDBela/blob/main/design/MiniLogoDB.svg)
 
-</div>
+
 
 
 <h3 align="center">CaraDBela</h3>
