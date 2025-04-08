@@ -17,7 +17,7 @@
 
 <br />
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/8fa89c20-952a-4310-8da3-6c92704ec0d6" alt="MiniLogo" width="190" height="190">
+  <img src="https://github.com/user-attachments/assets/fd5c9dcf-033b-4930-ab4c-8f63a5b06507" alt="MiniLogo" width="190" height="190">
 </div>
 
 
