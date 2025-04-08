@@ -16,9 +16,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  ![MiniLogo](https://jumpshare.com/s/bIoRpzpSFpNbcGfZsF6S)
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+  <img src="https://jumpshare.com/s/bIoRpzpSFpNbcGfZsF6S" alt="MiniLogo" width="80" height="80">
+</div>
+
 
 <h3 align="center">CaraDBela</h3>
 
