@@ -42,7 +42,7 @@
 <!-- ABOUT THE PROJECT -->
 ## Sobre o projeto
 <div align="center">
-<img src="https://github.com/davideferreira00/caraDBela/blob/main/design/BigLogoComSlogan.svg" alt="MiniLogo" width="190" height="190">
+<img src="https://github.com/davideferreira00/caraDBela/blob/main/design/BigLogoComSlogan.svg" alt="MiniLogo" width="360" height="360">
 </div>
 
 Somos uma base de dados modelar para dispositivos IoT que regista principalmente acessos suspeitos para monitorização, análise comportamental e resposta a incidentes de segurança, permitindo uma visão detalhada das interações com cada dispositivo na rede.
