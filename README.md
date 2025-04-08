@@ -17,7 +17,7 @@
 <br />
  
 <div align="center">
-![Image](https://github.com/user-attachments/assets/fd5c9dcf-033b-4930-ab4c-8f63a5b06507)
+![MiniLogo](https://github.com/davideferreira00/caraDBela/blob/main/design/MiniLogoDB.svg)
 
 </div>
 
