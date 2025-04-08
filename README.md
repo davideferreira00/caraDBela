@@ -17,7 +17,8 @@
 <br />
  
 <div align="center">
-![Image](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.simplilearn.com%2Fimage-processing-article&psig=AOvVaw3ADPnrCWMTEDfewlSJykUQ&ust=1744206452794000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjt2cHJyIwDFQAAAAAdAAAAABAJ)
+![9GXtNSs](https://github.com/user-attachments/assets/9f8de903-6197-4384-8a22-9e7ee202aef9)
+
 </div>
 
 
