@@ -16,7 +16,7 @@
 <!-- PROJECT LOGO -->
 
 <div align="center">
-![MiniLogo](https://github.com/davideferreira00/caraDBela/blob/main/design/MiniLogoDB.svg)
+[![MiniLogo](https://github.com/davideferreira00/caraDBela/blob/main/design/MiniLogoDB.svg)]
 
 
 
