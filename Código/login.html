@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-bg {
+            background-image: url('https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            transform: translateY(-1.5rem) scale(0.85);
+            background-color: white;
+            padding: 0 0.5rem;
+        }
+        .btn-gradient {
+            background: linear-gradient(45deg, #4f46e5, #10b981);
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(45deg, #10b981, #4f46e5);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Hero Section -->
+        <div class="hero-bg md:w-1/2 flex items-center justify-center p-8 text-white relative">
+            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            <div class="relative z-10 max-w-md">
+                <h1 class="text-4xl font-bold mb-4">Welcome Back</h1>
+                <p class="text-lg mb-8">Sign in to access your account and continue your journey with us.</p>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="md:w-1/2 flex items-center justify-center p-8 bg-white">
+            <div class="w-full max-w-md">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8">Login</h2>
+                
+                <form id="loginForm" class="space-y-6">
+                    <div class="input-group">
+        <input type="email" id="email" placeholder=" " autocomplete="email"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label for="email" class="absolute left-4 top-3 text-gray-500 transition-all duration-200">Email Address</label>
+                    </div>
+
+                    <div class="input-group">
+        <input type="password" id="password" placeholder=" " autocomplete="current-password"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label for="password" class="absolute left-4 top-3 text-gray-500 transition-all duration-200">Password</label>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                        </div>
+                        <a href="#" class="text-sm text-blue-600 hover:text-blue-500">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="w-full btn-gradient text-white py-3 px-4 rounded-lg font-medium transition duration-300">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-2 gap-3">
+                        <a href="#" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fab fa-google text-red-500 mr-2"></i> Google
+                        </a>
+                        <a href="#" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fab fa-facebook-f text-blue-600 mr-2"></i> Facebook
+                        </a>
+                    </div>
+                </div>
+
+                <p class="mt-8 text-center text-sm text-gray-500">
+                    Don't have an account? <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (!/^\S+@\S+\.\S+$/.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            console.log('Login attempt with:', { email, password });
+            // In a real app, you would make an API call here
+        });
+    </script>
+</body>
+</html>
