@@ -1,0 +1,4 @@
+(Imagens com as ilustrações todas postadas nesta pasta)
+
+Na conexão que acabaste de crair vais ter 3 DBs por defeito, mas tu queres criar a tua DBs e Collections(não se assustem, é quase a mesma coisa que as tabelas em SQL) Personalizadas.
+Novamente vais clicar no símbolo "+" e vai abrir uma janela com o pedido para o nome da DB e o nome da Collection, onde diz "Time-Series" não selecionamos porque não nos faz falta, e clicamos em "Save Changes".
