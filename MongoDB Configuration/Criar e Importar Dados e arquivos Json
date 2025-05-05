@@ -1,0 +1,6 @@
+(Imagens com as ilustrações todas postadas nesta pasta)
+
+Na criação de dados entramos na nossa "Collection" e em "Import Data" ou "Add Data", mas começamos por Criar um documento em "Add Data".
+Na criação do documento não precisamos de inserir um ID, porque depois cria um ID automaticamente(mas em caso á parte se necessário inserimos um ID próprio), de resto inserimos outras informações necessárias, como nomes, idade, etc.
+Se der erro o MongoDB tem uma solução no canto superior direito que alinha o texto automaticamente.
+Para importar dados é ainda mais simples só selecionar o arquivo Json já criado e importá-lo para a "Collection".
