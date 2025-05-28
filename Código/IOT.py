@@ -4,43 +4,39 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        hostname = socket.gethostname()
-        local_ip = socket.gethostbyname(hostname)
-        if local_ip.startswith("127."):
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("8.8.8.8", 80))
-            local_ip = s.getsockname()[0]
-            s.close()
-        return local_ip
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
     except:
-        return None
+        ip = None
+    finally:
+        s.close()
+    return ip
 
 def ping(ip):
-    # No Windows, -n 1 para 1 pacote e -w 1000 para timeout 1000 ms
     try:
         resultado = subprocess.run(
-            ["ping", "-n", "1", "-w", "1000", ip],
+            ["ping", "-n", "1", "-w", "800", ip],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
-        return (ip, resultado.returncode == 0)
-    except Exception:
-        return (ip, False)
+        return ip if resultado.returncode == 0 else None
+    except:
+        return None
 
 def get_mac(ip):
     try:
-        resultado = subprocess.run(["arp", "-a", ip], capture_output=True, text=True)
-        linhas = resultado.stdout.splitlines()
-        for linha in linhas:
-            if ip in linha:
-                partes = linha.split()
+        output = subprocess.check_output(["arp", "-a", ip], text=True)
+        for line in output.splitlines():
+            if ip in line:
+                partes = line.split()
                 for parte in partes:
                     if "-" in parte and len(parte) == 17:
                         return parte
-    except Exception:
+    except:
         pass
-    return None
+    return "Desconhecido"
 
 def get_hostname(ip):
     try:
@@ -51,41 +47,46 @@ def get_hostname(ip):
 def main():
     ip_local = get_local_ip()
     if not ip_local:
-        print("Não foi possível detectar o IP local.")
+        print("Erro: Não foi possível obter o IP local.")
         return
 
-    print(f"IP local detetado: {ip_local}")
     prefixo = ".".join(ip_local.split(".")[:3])
-
-    print("A procurar dispositivos na rede...")
+    print(f"IP local detetado: {ip_local}")
+    print("A procurar dispositivos ativos na rede...")
 
     ativos = []
-    with ThreadPoolExecutor(max_workers=50) as executor:
-        futuros = {executor.submit(ping, f"{prefixo}.{i}"): i for i in range(1, 255)}
+    with ThreadPoolExecutor(max_workers=100) as executor:
+        futuros = [executor.submit(ping, f"{prefixo}.{i}") for i in range(1, 255)]
         for futuro in as_completed(futuros):
-            ip, ativo = futuro.result()
-            if ativo:
+            ip = futuro.result()
+            if ip:
                 ativos.append(ip)
 
+    if not ativos:
+        print("Nenhum dispositivo encontrado na rede.")
+        return
+
     dispositivos = {}
+
     for ip in ativos:
         mac = get_mac(ip)
-        if mac:
-            nome_dns = get_hostname(ip)
-            print(f"IP: {ip} - MAC: {mac} - Nome: {nome_dns}")
-            resposta = input("Deseja adicionar este dispositivo à rede (sim/não)? ").strip().lower()
-            if resposta in ["sim", "s"]:
-                nome = input(f"Nome para o dispositivo [{nome_dns}]: ").strip()
-                if nome == "":
-                    nome = nome_dns
-                dispositivos[nome] = {"IP": ip, "MAC": mac}
-                print(f"{ip} - {mac} foi adicionado como '{nome}'.")
-            else:
-                print(f"{ip} - {mac} não foi adicionado.")
+        hostname = get_hostname(ip)
+        print(f"\nIP: {ip} | MAC: {mac} | Nome: {hostname}")
+
+        resposta = input("Este dispositivo pertence à rede? (sim/não): ").strip().lower()
+        if resposta in ["sim", "s"]:
+            nome = input(f"Nome personalizado (ou ENTER para manter '{hostname}'): ").strip()
+            if not nome:
+                nome = hostname
+            dispositivos[nome] = {"IP": ip, "MAC": mac}
+            print(f"[✔️] Dispositivo '{nome}' adicionado com sucesso.")
+        else:
+            print(f"[⚠️] O IP {ip} não foi adicionado.")
 
     with open("dispositivos.json", "w", encoding="utf-8") as f:
         json.dump(dispositivos, f, indent=4)
-    print("Dispositivos foram salvos em dispositivos.json.")
+
+    print("\n✅ Todos os dispositivos autorizados foram guardados em 'dispositivos.json'.")
 
 if __name__ == "__main__":
     main()
