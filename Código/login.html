@@ -1,135 +1,83 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login e Coleta de Dados Silenciosa</title>
-<style>
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #34495e, #2c3e50);
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #ecf0f1;
-  }
-  .container {
-    background: #2c3e50;
-    width: 360px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    padding: 30px 40px;
-    text-align: center;
-  }
-  h2 {
-    margin-bottom: 25px;
-    color: #1abc9c;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-  }
-  input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 13px 15px;
-    margin: 10px 0 25px 0;
-    border-radius: 6px;
-    border: none;
-    font-size: 16px;
-    color: #2c3e50;
-    font-weight: 600;
-  }
-  button {
-    width: 100%;
-    padding: 14px 0;
-    border: none;
-    border-radius: 8px;
-    background-color: #1abc9c;
-    color: #2c3e50;
-    font-size: 20px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: background-color 0.3s;
-  }
-  button:hover {
-    background-color: #16a085;
-  }
-  #error-msg {
-    color: #e74c3c;
-    font-weight: 600;
-    margin-bottom: 15px;
-    min-height: 20px;
-  }
-</style>
-</head>
-<body>
-  <div class="container" id="login-container">
-    <h2>LOGIN</h2>
-    <div id="error-msg"></div>
-    <input type="text" id="username" placeholder="Usuário" autocomplete="off" />
-    <input type="password" id="password" placeholder="Senha" autocomplete="off" />
-    <button id="login-button">Entrar</button>
-  </div>
+const express = require('express');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const cors = require('cors');
 
-<script>
-  const USER = 'admin';
-  const PASS = '1234';
+const app = express();
+const PORT = 3000;
 
-  const loginContainer = document.getElementById('login-container');
-  const loginButton = document.getElementById('login-button');
-  const errorMsg = document.getElementById('error-msg');
+// Configurar middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public')); // Servir frontend
 
-  loginButton.addEventListener('click', () => {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    if(username === USER && password === PASS) {
-      errorMsg.textContent = '';
-      collectAndStoreData(username);
-      alert('Login realizado com sucesso!');
-      executeScript(); // Chama a função para executar o script
-    } else {
-      errorMsg.textContent = 'Usuário ou senha incorretos!';
+// Conectar no MongoDB - substitua a string de conexão pela sua
+const mongoURI = 'mongodb://localhost:27017/webapp-auth';
+// para MongoDB Atlas, substitua com a string fornecida
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Conectado ao MongoDB');
+}).catch(err => {
+  console.error('Erro ao conectar MongoDB:', err);
+});
+
+// Definir schema e modelo do usuário
+const userSchema = new mongoose.Schema({
+  username: { type: String, unique: true, required: true },
+  passwordHash: { type: String, required: true },
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Rota para criar conta
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+  if(!username || !password) {
+    return res.status(400).json({ message: 'Username e senha são obrigatórios' });
+  }
+  try {
+    const existingUser = await User.findOne({ username });
+    if(existingUser) {
+      return res.status(409).json({ message: 'Usuário já existe' });
     }
-  });
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
 
-  function collectAndStoreData(username) {
-    // Busca IP público via serviço
-    fetch('https://api.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => {
-        const userData = {
-          username: username,
-          ip: data.ip,
-          timestamp: new Date().toISOString()
-        };
-        // Armazena no localStorage silenciosamente
-        localStorage.setItem('userData', JSON.stringify(userData));
-      })
-      .catch(() => {
-        // Mesmo em caso de erro não exibe nada
-      });
+    const newUser = new User({ username, passwordHash });
+    await newUser.save();
+    res.status(201).json({ message: 'Conta criada com sucesso' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
+});
 
-  function executeScript() {
-    fetch('/execute-script', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.text())
-    .then(data => {
-      console.log('Resultado do script:', data);
-      alert('Script executado com sucesso! Veja o console para detalhes.');
-    })
-    .catch(error => {
-      console.error('Erro ao executar o script:', error);
-      alert('Erro ao executar o script.');
-    });
+// Rota para login
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  if(!username || !password) {
+    return res.status(400).json({ message: 'Username e senha são obrigatórios' });
   }
-</script>
-</body>
-</html>
+  try {
+    const user = await User.findOne({ username });
+    if(!user) {
+      return res.status(401).json({ message: 'Usuário ou senha incorretos' });
+    }
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if(!isMatch) {
+      return res.status(401).json({ message: 'Usuário ou senha incorretos' });
+    }
+    res.json({ message: 'Login bem-sucedido' });
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(\`Servidor rodando na porta \${PORT}\`);
+});
+
