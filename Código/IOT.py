@@ -79,14 +79,14 @@ def main():
             if not nome:
                 nome = hostname
             dispositivos[nome] = {"IP": ip, "MAC": mac}
-            print(f"[✔️] Dispositivo '{nome}' adicionado com sucesso.")
+            print(f"Dispositivo '{nome}' adicionado com sucesso.")
         else:
-            print(f"[⚠️] O IP {ip} não foi adicionado.")
+            print(f"O IP {ip} não foi adicionado.")
 
     with open("dispositivos.json", "w", encoding="utf-8") as f:
         json.dump(dispositivos, f, indent=4)
 
-    print("\n✅ Todos os dispositivos autorizados foram guardados em 'dispositivos.json'.")
+    print("\nTodos os dispositivos autorizados foram guardados em 'dispositivos.json'.")
 
 if __name__ == "__main__":
     main()
