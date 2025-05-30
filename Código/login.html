@@ -6,14 +6,11 @@ const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
-// Configurar middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public')); // Servir frontend
 
-// Conectar no MongoDB - substitua a string de conexão pela sua
-const mongoURI = 'mongodb://localhost:27017/webapp-auth';
-// para MongoDB Atlas, substitua com a string fornecida
+const mongoURI = 'mongodb://localhost:27017/CaraDBela';
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
@@ -24,15 +21,13 @@ mongoose.connect(mongoURI, {
   console.error('Erro ao conectar MongoDB:', err);
 });
 
-// Definir schema e modelo do usuário
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true, required: true },
   passwordHash: { type: String, required: true },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('users', userSchema);
 
-// Rota para criar conta
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   if(!username || !password) {
@@ -55,7 +50,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Rota para login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   if(!username || !password) {
@@ -78,6 +72,5 @@ app.post('/login', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(\`Servidor rodando na porta \${PORT}\`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
-
