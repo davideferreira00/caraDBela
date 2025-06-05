@@ -147,14 +147,14 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
-    }).then(res => {
-      if (res.ok) return res.json();
-      return res.json().then(data => Promise.reject(data));
-    }).then(data => {
+    })
+    .then(res => res.json().then(data => res.ok ? data : Promise.reject(data)))
+    .then(data => {
       registerMessage.textContent = data.message || 'Conta criada com sucesso!';
       registerMessage.classList.add('success');
       registerForm.reset();
-    }).catch(err => {
+    })
+    .catch(err => {
       registerMessage.textContent = err.message || 'Erro ao criar conta.';
       registerMessage.classList.add('error');
     });
@@ -171,20 +171,30 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
-    }).then(res => {
-      if (res.ok) return res.json();
-      return res.json().then(data => Promise.reject(data));
-    }).then(data => {
-      loginMessage.textContent = data.message || 'Login bem-sucedido!';
-      loginMessage.classList.add('success');
-      loginForm.reset();
-      // Aqui você pode redirecionar para uma página protegida, ex:
-      // window.location.href = '/dashboard.html';
-    }).catch(err => {
+    })
+    .then(res => res.json().then(data => res.ok ? data : Promise.reject(data)))
+    .then(data => {
+  loginMessage.textContent = data.message || 'Login bem-sucedido!';
+  loginMessage.classList.add('success');
+  loginForm.reset();
+
+  if (data.username === 'admin') {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.userId);
+    window.location.href = 'dashboard.html';
+  } else {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.userId);
+    window.location.href = 'index.html';
+  }
+})
+
+    .catch(err => {
       loginMessage.textContent = err.message || 'Erro no login.';
       loginMessage.classList.add('error');
     });
   });
 </script>
+
 </body>
 </html>
