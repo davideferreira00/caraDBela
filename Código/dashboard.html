@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">Painel de Administração</h1>
+    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+  </nav>
+
+  <main class="max-w-6xl mx-auto mt-10">
+    <div class="bg-white p-6 rounded shadow mb-6">
+      <h2 class="text-2xl font-semibold mb-2" id="status">A carregar...</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-4">Utilizadores Registados</h2>
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border-b py-2 px-4">Username</th>
+            <th class="border-b py-2 px-4">ID</th>
+          </tr>
+        </thead>
+        <tbody id="userList">
+          <tr><td colspan="2" class="py-4 px-4 text-center text-gray-500">A carregar utilizadores...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bg-white p-6 rounded shadow mt-10">
+      <h2 class="text-2xl font-semibold mb-4">Dispositivos por Utilizador</h2>
+      <div id="deviceList">
+        <p class="text-gray-500">A carregar dispositivos...</p>
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded shadow mt-10">
+        <h2 class="text-2xl font-semibold mb-4">Relatórios de Abuso</h2>
+            <div id="reportList">
+                <p class="text-gray-500">A carregar relatórios...</p>
+            </div>
+    </div>
+  </main>
+
+  <script>
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = 'login.html';
+  }
+
+
+    fetch('http://localhost:3000/protected', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Token inválido');
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('status').textContent = data.message;
+    })
+    .catch(() => {
+      alert('Sessão expirada ou inválida. Faça login novamente.');
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    });
+
+    fetch('http://localhost:3000/users', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      const userList = document.getElementById('userList');
+      userList.innerHTML = '';
+      data.forEach(user => {
+        const row = `<tr>
+          <td class="border-b py-2 px-4">${user.username}</td>
+          <td class="border-b py-2 px-4">${user._id}</td>
+        </tr>`;
+        userList.innerHTML += row;
+      });
+    })
+    .catch(() => {
+      document.getElementById('userList').innerHTML = '<tr><td colspan="2" class="py-4 px-4 text-center text-red-500">Erro ao carregar utilizadores.</td></tr>';
+    });
+
+    fetch('http://localhost:3000/reports', {
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }
+})
+.then(res => res.json())
+.then(data => {
+  const reportList = document.getElementById('reportList');
+  reportList.innerHTML = '';
+
+  const usernames = Object.keys(data);
+
+  if (usernames.length === 0) {
+    reportList.innerHTML = '<p class="text-gray-500">Nenhum relatório encontrado.</p>';
+    return;
+  }
+
+  usernames.forEach(username => {
+    const reports = data[username];
+    const section = document.createElement('div');
+    section.classList.add('mb-6');
+
+    section.innerHTML = `
+      <details class="mb-2">
+        <summary class="cursor-pointer font-bold text-blue-600">${username} (${reports.length})</summary>
+        <ul class="ml-4 mt-2 list-disc text-gray-700">
+          ${reports.map(r => `<li><strong>IP:</strong> ${r.ip} | <strong>Motivo:</strong> ${r.reason} | <strong>Data:</strong> ${new Date(r.date).toLocaleString()}</li>`).join('')}
+        </ul>
+      </details>
+    `;
+
+    reportList.appendChild(section);
+  });
+})
+.catch(() => {
+  document.getElementById('reportList').innerHTML = '<p class="text-red-500">Erro ao carregar relatórios.</p>';
+});
+
+fetch('http://localhost:3000/devices-by-user', {
+  headers: {
+    'Authorization': 'Bearer ' + token
+  }
+})
+.then(res => res.json())
+.then(data => {
+  const deviceList = document.getElementById('deviceList');
+  deviceList.innerHTML = '';
+
+  for (const userId in data) {
+    const { username, devices } = data[userId];
+
+    const section = document.createElement('div');
+    section.classList.add('mb-6');
+
+    section.innerHTML = `
+      <h3 class="text-xl font-bold text-blue-700 mb-2">${username}</h3>
+      <table class="w-full text-left border-collapse mb-4">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border-b py-2 px-4">IP</th>
+            <th class="border-b py-2 px-4">MAC</th>
+            <th class="border-b py-2 px-4">Nome</th>
+            <th class="border-b py-2 px-4">Adicionado em</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${devices.map(device => `
+            <tr>
+              <td class="border-b py-2 px-4">${device.ip}</td>
+              <td class="border-b py-2 px-4">${device.mac || 'Desconhecido'}</td>
+              <td class="border-b py-2 px-4">${device.name}</td>
+              <td class="border-b py-2 px-4">${new Date(device.addedAt).toLocaleString()}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+
+    deviceList.appendChild(section);
+  }
+})
+.catch(() => {
+  document.getElementById('deviceList').innerHTML = '<p class="text-red-500">Erro ao carregar dispositivos.</p>';
+});
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
