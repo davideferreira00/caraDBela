@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f8;
+    }
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h2 {
+      margin: 0;
+    }
+    #logout-btn {
+      background: #e74c3c;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #logout-btn:hover {
+      background: #c0392b;
+    }
+    main {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card-seila, .card {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+    .card-seila {
+      text-align: left;
+    }
+    #welcomeGuest h3 {
+      color: #34495e;
+    }
+    .login-btn {
+      background: #3498db;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .login-btn:hover {
+      background: #2980b9;
+    }
+    #runScan {
+      background: #3498db;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #runScan:hover {
+      background: #2980b9;
+    }
+    #add-device-modal {
+      display: none;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: left;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    #add-device-modal p,
+    #add-device-modal label {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    #add-device-modal label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #add-device-modal input {
+      flex: 1;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    #confirmAdd,
+    #ignoreAdd {
+      align-self: flex-start;
+      margin-right: 10px;
+      margin-top: 10px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #confirmAdd {
+      background-color: #2ecc71;
+      color: white;
+    }
+    #confirmAdd:hover {
+      background-color: #27ae60;
+    }
+    #ignoreAdd {
+      background-color: #bdc3c7;
+    }
+    #ignoreAdd:hover {
+      background-color: #95a5a6;
+    }
+    .device-card {
+      background: white;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 6px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+      text-align: left;
+      position: relative;
+    }
+    .device-card strong {
+      display: inline-block;
+      width: 60px;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: #e74c3c;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      color: #c0392b;
+    }
+    #scanResults {
+      max-width: 700px;
+      width: 100%;
+    }
+    .icon {
+      font-size: 40px;
+      color: #3498db;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Home</h2>
+  <button id="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+</header>
+
+<main>
+  <div id="welcomeGuest" class="card">
+    <div style="font-size: 50px; color: #3498db;">👋</div>
+    <h3 style="margin: 10px 0;">Olá, visitante!</h3>
+    <p style="color: #7f8c8d; font-size: 16px;">
+      Para aceder às funcionalidades da dashboard e gerir os dispositivos da sua rede, inicie sessão.
+    </p>
+    <a href="login.html" class="login-btn">Fazer Login</a>
+  </div>
+
+  <div id="welcomeUser" class="card-seila" style="display: none;">
+    <h3 style="margin-bottom: 10px; color: #2c3e50;">🎉 Bem-vindo de volta!</h3>
+    <p style="margin-bottom: 20px; font-size: 15px; color: #7f8c8d;">
+      Clique no botão abaixo para iniciar uma análise da sua rede e visualizar os dispositivos conectados.
+    </p>
+    <button id="runScan">🔍 Analisar Rede</button>
+
+    <div id="scanResults"></div>
+  </div>
+
+  <div id="add-device-modal">
+    <p><strong>Dispositivo encontrado:</strong></p>
+    <p><strong>IP:</strong> <span id="device-ip"></span></p>
+    <p><strong>MAC:</strong> <span id="device-mac"></span></p>
+    <label><strong>Nome:</strong> <input type="text" id="device-name" /></label><br>
+    <button id="confirmAdd">Adicionar</button>
+    <button id="ignoreAdd">Ignorar</button>
+  </div>
+</main>
+
+<script>
+  let deviceQueue = [];
+  let currentDevice = null;
+  const addedDevices = [];
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+
+  function addDeviceCard(device) {
+    const container = document.getElementById('scanResults');
+    const div = document.createElement('div');
+    div.className = 'device-card';
+    div.dataset.id = device._id || '';
+    div.innerHTML = `
+      <p><strong>Nome:</strong> ${device.name}</p>
+      <p><strong>IP:</strong> ${device.ip}</p>
+      <p><strong>MAC:</strong> ${device.mac}</p>
+      <button class="delete-btn" title="Eliminar dispositivo">🗑️</button>
+    `;
+    container.appendChild(div);
+
+    div.querySelector('.delete-btn').addEventListener('click', () => {
+      deleteDevice(device._id, div);
+    });
+  }
+
+  function displayResults() {
+    const container = document.getElementById('scanResults');
+    container.innerHTML = '<h3>Dispositivos:</h3>';
+    addedDevices.forEach(device => addDeviceCard(device));
+  }
+
+  function deleteDevice(id, deviceDiv) {
+    if (!id) return alert('ID do dispositivo inválido para eliminar.');
+    fetch(`/delete-device/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Falha ao eliminar dispositivo');
+      return res.json();
+    })
+    .then(() => {
+      const index = addedDevices.findIndex(dev => dev._id === id);
+      if (index !== -1) {
+        addedDevices.splice(index, 1);
+      }
+      deviceDiv.remove();
+    })
+    .catch(err => alert(err.message));
+  }
+
+  function showNextDevice() {
+    if (deviceQueue.length === 0) {
+      document.getElementById('add-device-modal').style.display = 'none';
+      displayResults();
+      return;
+    }
+    currentDevice = deviceQueue.shift();
+    document.getElementById('device-ip').textContent = currentDevice.ip;
+    document.getElementById('device-mac').textContent = currentDevice.mac;
+    document.getElementById('device-name').value = '';
+    document.getElementById('add-device-modal').style.display = 'flex';
+  }
+
+  function addDevice() {
+    const name = document.getElementById('device-name').value.trim();
+    if (!name) {
+      alert('Por favor, insira um nome para o dispositivo.');
+      return;
+    }
+    const newDevice = {
+      ip: currentDevice.ip,
+      mac: currentDevice.mac,
+      name,
+      userId,
+    };
+    fetch('/add-device', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(newDevice)
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Falha ao adicionar dispositivo');
+      return res.json();
+    })
+    .then(data => {
+      addedDevices.push(data);
+      showNextDevice();
+    })
+    .catch(err => alert(err.message));
+  }
+
+  function ignoreDevice() {
+    showNextDevice();
+  }
+
+  function runScan() {
+    fetch('/scan', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao executar análise');
+      return res.json();
+    })
+    .then(devices => {
+      const knownMacs = new Set(addedDevices.map(d => d.mac));
+      deviceQueue = devices.filter(d => !knownMacs.has(d.mac));
+      if (deviceQueue.length === 0) {
+        alert('Nenhum dispositivo novo encontrado.');
+        displayResults();
+      } else {
+        showNextDevice();
+      }
+    })
+    .catch(err => alert(err.message));
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+  }
+
+  function showGuest() {
+    document.getElementById('welcomeGuest').style.display = 'block';
+    document.getElementById('welcomeUser').style.display = 'none';
+    document.getElementById('logout-btn').style.display = 'none';
+  }
+
+  function showUser() {
+    document.getElementById('welcomeGuest').style.display = 'none';
+    document.getElementById('welcomeUser').style.display = 'block';
+    document.getElementById('logout-btn').style.display = 'inline-block';
+  }
+
+  function fetchDevices() {
+    fetch(`/get-devices/${userId}`, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao obter dispositivos');
+      return res.json();
+    })
+    .then(devices => {
+      addedDevices.push(...devices);
+      displayResults();
+    })
+    .catch(err => alert(err.message));
+  }
+
+  document.getElementById('confirmAdd').addEventListener('click', addDevice);
+  document.getElementById('ignoreAdd').addEventListener('click', ignoreDevice);
+  document.getElementById('runScan').addEventListener('click', runScan);
+
+  if (!token || !userId) {
+    showGuest();
+  } else {
+    showUser();
+    fetchDevices();
+  }
+</script>
+
+</body>
+</html>
