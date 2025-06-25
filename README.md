@@ -127,8 +127,8 @@ Não te esqueças de dar uma estrela ao projeto! Obrigado novamente!
 
 ### Kiss the devs:
 
-<a href="https://github.com/github.com/caraDBela/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github.com/caraDBela" />
+<a href="https://github.com/davideferreira00/caraDBela/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=davideferreira00/caraDBela" />
 </a>
 
 <!-- LICENSE -->
