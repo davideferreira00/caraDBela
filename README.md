@@ -127,11 +127,9 @@ Não te esqueças de dar uma estrela ao projeto! Obrigado novamente!
 
 ### Kiss the devs:
 
-<a href="https://github.com/github.com/davideferreira00/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github.com/davideferreira00" />
+<a href="https://github.com/davideferreira00/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=davideferreira00/graphs" />
 </a>
-
-Made with [contrib.rocks](https://contrib.rocks).
 
 <!-- LICENSE -->
 ## Licensa
