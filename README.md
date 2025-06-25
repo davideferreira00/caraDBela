@@ -131,6 +131,8 @@ Não te esqueças de dar uma estrela ao projeto! Obrigado novamente!
   <img src="https://contrib.rocks/image?repo=github.com/davideferreira00" />
 </a>
 
+Made with [contrib.rocks](https://contrib.rocks).
+
 <!-- LICENSE -->
 ## Licensa
 
