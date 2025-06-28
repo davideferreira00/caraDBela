@@ -22,12 +22,12 @@ void loop() {
     bool allowed = memcmp(station.mac, allowedMac, 6) == 0;
 
     if (!allowed) {
-      Serial.print("Dispositivo não autorizado detectado: ");
+      Serial.print("Dispositivo não autorizado: ");
       for (int j = 0; j < 6; j++) {
         Serial.printf("%02X", station.mac[j]);
         if (j < 5) Serial.print(":");
       }
-      Serial.println(" ➜ Desconectando...");
+      Serial.println("A Desconectar...");
 
       esp_wifi_deauth_sta(i + 1);
     }
