@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard CaraDBela | Mar IoT</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Impact&family=Trebuchet+MS&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/caraDBela.css">
+</head>
+<body>
+<div class="header-container">
+  <div class="logo-container">
+    <img src="imagens/caraDBela.png" alt="Logo CaraDBela" class="logo-img">
+    <div class="logo-text">
+      <div class="logo-main">CaraDBela</div>
+      <div class="logo-tagline">Navegue com Segurança</div>
+    </div>
+  </div>
+  <button class="logout-btn" id="logoutBtn">
+    <i class="fas fa-sign-out-alt"></i> Sair
+  </button>
+</div>
+
+<div class="wave-container">
+  <svg class="wave-static" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+      <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+      <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+    </svg>
+    <svg class="wave-animated" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+      <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+      <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+    </svg>
+</div>
+
+  <div class="container">
+    <div class="nav-beacons" id="navBeacons" style="display: none;">
+      <div class="beacon active" id="networkBeacon" data-tab="networkTab">
+        <i class="fas fa-network-wired"></i>
+        <span class="beacon-label">Rede</span>
+      </div>
+      <div class="beacon" id="securityBeacon" data-tab="securityTab">
+        <i class="fas fa-shield-alt"></i>
+        <span class="beacon-label">Segurança</span>
+      </div>
+      <div class="beacon" id="whitelistBeacon" data-tab="whitelistTab">
+        <i class="fas fa-list-check"></i>
+        <span class="beacon-label">Whitelist</span>
+      </div>
+    </div>
+
+    <main>
+      <!-- VISITANTE -->
+      <div id="welcomeGuest" class="card welcome-card">
+        <div class="welcome-icon">👋</div>
+        <h3>Olá, visitante!</h3>
+        <p>
+          Para aceder às funcionalidades da dashboard e gerir os dispositivos da sua rede, inicie sessão.
+        </p>
+        <a href="login.html" class="login-btn">Fazer Login <i class="fas fa-sign-in-alt"></i></a>
+      </div>
+
+      <!-- UTILIZADOR AUTENTICADO -->
+      <div id="welcomeUser">
+        <!-- TAB DE ANÁLISE -->
+        <!-- Replace the network-section div with this: -->
+<div id="networkTab" class="tab-content active">
+  <div class="section-header">
+    <h2 class="section-title"><i class="fas fa-network-wired"></i> Análise de Rede</h2>
+    <button id="scan-btn" class="btn btn-primary"><i class="fas fa-search"></i> Analisar Rede</button>
+  </div>
+  
+  <div class="card">
+    <div class="devices-table-container">
+      <table class="devices-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>IP</th>
+            <th>MAC</th>
+            <th>Rede</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="devicesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+        
+        <!-- TAB DE SEGURANÇA -->
+        <div id="securityTab" class="tab-content">
+          <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-shield-alt"></i> Scanner de Segurança</h2>
+          </div>
+          
+          <div class="card">
+            <h3 class="mb-20">Verificação de Segurança Avançada</h3>
+            <div class="form-group">
+              <label for="securityDeviceSelect">Ou selecione um dispositivo:</label>
+              <select id="securityDeviceSelect">
+                <option value="">Selecione um dispositivo</option>
+              </select>
+            </div>
+            <button id="runSecurityScan" class="btn btn-primary"><i class="fas fa-shield-alt"></i> Executar Scanner</button>
+            <div id="securityResults" class="security-results-container">
+            <div class="text-center security-placeholder">
+              <i class="fas fa-shield-alt"></i>
+              <h3>Scanner de Segurança</h3>
+              <p>Selecione um dispositivo ou insira um endereço IP para começar a análise</p>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- TAB DE WHITELIST -->
+<div id="whitelistTab" class="tab-content">
+  <div class="section-header">
+    <h2 class="section-title"><i class="fas fa-list-check"></i> Whitelist</h2>
+  </div>
+  
+  <div class="card">
+    <div class="whitelist-intro">
+      <h3 class="mb-20">Gestão de Dispositivos de Rede</h3>
+      <p>Gerencie quais dispositivos têm acesso à sua rede principal e quais estão isolados na rede IoT segura.</p>
+    </div>
+
+    <div class="whitelist-container">
+      <!-- Rede Principal -->
+      <div class="whitelist-section main-network">
+        <div class="section-header">
+          <h4><i class="fas fa-laptop-house"></i> Rede Principal</h4>
+          <span class="device-count" id="mainNetworkCount">0 dispositivos</span>
+        </div>
+        <div class="section-description">
+          <p>Alcança todos dispositivos na rede, o que pode levar a riscos desnecessários.</p>
+        </div>
+        <div id="userDevicesList" class="devices-grid"></div>
+      </div>
+
+      <!-- Whitelist -->
+      <div class="whitelist-section approved-devices">
+        <div class="section-header">
+          <h4><i class="fas fa-check-circle"></i> Whitelist</h4>
+          <span class="device-count" id="whitelistCount">0 dispositivos</span>
+        </div>
+        <div class="section-description">
+          <p>Limitado em questão de comunicação com outros dispositivos, tornando a rede mais segura. Além de gestão completa na rede.</p>
+        </div>
+        <div id="whitelistDevices" class="devices-grid"></div>
+      </div>
+    </div>
+
+    <div class="whitelist-legend mt-20">
+      <div class="legend-item">
+        <span class="legend-color main-network"></span>
+        <span>Rede Principal</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color approved-devices"></span>
+        <span>Whitelist</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- MODAL DE ADIÇÃO DE DISPOSITIVO -->
+      <div id="modal-overlay" style="display: none;">
+        <div id="add-device-modal" class="card">
+          <button class="modal-close">&times;</button>
+          <h3><i class="fas fa-plus-circle"></i> Adicionar Dispositivo</h3>
+          
+          <div class="device-info-row">
+            <p><strong>Rede:</strong> <span id="device-ssid"></span></p>
+            <p><strong>IP:</strong> <span id="device-ip"></span></p>
+            <p><strong>MAC:</strong> <span id="device-mac"></span></p>
+          </div>
+        
+          <div class="form-group">
+            <label for="device-name">Nome do dispositivo:</label>
+            <input type="text" id="device-name" placeholder="Ex: Router da Sala" />
+          </div>
+          
+          <div class="form-group">
+            <label for="device-type">Tipo de dispositivo:</label>
+            <select id="device-type">
+              <option value="">Selecione um tipo</option>
+              <option value="router">Roteador</option>
+              <option value="phone">Smartphone</option>
+              <option value="laptop">Laptop</option>
+              <option value="iot">Dispositivo IoT</option>
+              <option value="tv">Smart TV</option>
+              <option value="printer">Impressora</option>
+            </select>
+          </div>
+          
+          <div class="modal-actions">
+            <button id="ignoreAdd" class="btn">Ignorar</button>
+            <button id="confirmAdd" class="btn btn-primary">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="wave-container inverted" style="transform: rotate(180deg); margin-top: 3rem;">
+    <svg class="wave-static" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+      <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+      <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+    </svg>
+    <svg class="wave-animated" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+      <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+      <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+    </svg>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 CaraDBela. Criado com 💙 por CaraDBela Team.</p>
+  </footer>
+
+  <script src="JS/script.js"></script>
+</body>
+</html>
