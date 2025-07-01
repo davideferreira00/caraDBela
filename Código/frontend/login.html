@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autenticação WebApp</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+  }
+  .container {
+    background: white;
+    width: 360px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  h2 {
+    margin-bottom: 20px;
+    color: #4e54c8;
+  }
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 10px 0 20px 0;
+    border-radius: 8px;
+    border: 1.5px solid #ddd;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  input[type=text]:focus, input[type=password]:focus {
+    border-color: #4e54c8;
+    outline: none;
+  }
+  button {
+    width: 100%;
+    background: #4e54c8;
+    color: white;
+    padding: 14px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #3b3fc1;
+  }
+  .toggle-btns {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  .toggle-btns button {
+    width: 48%;
+    background: #ddd;
+    color: #555;
+    font-weight: 600;
+  }
+  .toggle-btns button.active {
+    background: #4e54c8;
+    color: white;
+  }
+  .message {
+    margin: 15px 0;
+    font-weight: 600;
+  }
+  .message.success {
+    color: #27ae60;
+  }
+  .message.error {
+    color: #e74c3c;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="toggle-btns">
+      <button id="btn-login" class="active">Login</button>
+      <button id="btn-register">Criar Conta</button>
+    </div>
+
+    <form id="login-form">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Usuário" required autocomplete="off" />
+      <input type="password" id="login-password" placeholder="Senha" required autocomplete="off" />
+      <button type="submit">Entrar</button>
+      <div id="login-message" class="message"></div>
+    </form>
+
+    <form id="register-form" style="display:none;">
+      <h2>Criar Conta</h2>
+      <input type="text" id="register-username" placeholder="Usuário" required autocomplete="off" />
+      <input type="password" id="register-password" placeholder="Senha" required autocomplete="off" />
+      <button type="submit">Criar Conta</button>
+      <div id="register-message" class="message"></div>
+    </form>
+  </div>
+
+<script>
+  const btnLogin = document.getElementById('btn-login');
+  const btnRegister = document.getElementById('btn-register');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const loginMessage = document.getElementById('login-message');
+  const registerMessage = document.getElementById('register-message');
+
+  btnLogin.addEventListener('click', () => {
+    btnLogin.classList.add('active');
+    btnRegister.classList.remove('active');
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+    clearMessages();
+  });
+
+  btnRegister.addEventListener('click', () => {
+    btnRegister.classList.add('active');
+    btnLogin.classList.remove('active');
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    clearMessages();
+  });
+
+  function clearMessages() {
+    loginMessage.textContent = '';
+    registerMessage.textContent = '';
+    loginMessage.className = 'message';
+    registerMessage.className = 'message';
+  }
+
+  registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+    clearMessages();
+
+    const username = document.getElementById('register-username').value.trim();
+    const password = document.getElementById('register-password').value.trim();
+
+    fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+    .then(res => res.json().then(data => res.ok ? data : Promise.reject(data)))
+    .then(data => {
+      registerMessage.textContent = data.message || 'Conta criada com sucesso!';
+      registerMessage.classList.add('success');
+      registerForm.reset();
+    })
+    .catch(err => {
+      registerMessage.textContent = err.message || 'Erro ao criar conta.';
+      registerMessage.classList.add('error');
+    });
+  });
+
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    clearMessages();
+
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+    .then(res => res.json().then(data => res.ok ? data : Promise.reject(data)))
+    .then(data => {
+  loginMessage.textContent = data.message || 'Login bem-sucedido!';
+  loginMessage.classList.add('success');
+  loginForm.reset();
+
+  if (data.username === 'admin') {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.userId);
+    localStorage.setItem('username', data.username);
+    localStorage.setItem('isAdmin', data.isAdmin);
+    window.location.href = 'utilizadores.html';
+  } else {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.userId);
+    localStorage.setItem('username', data.username);
+    window.location.href = 'index.html';
+  }
+})
+
+    .catch(err => {
+      loginMessage.textContent = err.message || 'Erro no login.';
+      loginMessage.classList.add('error');
+    });
+  });
+</script>
+
+</body>
+</html>
